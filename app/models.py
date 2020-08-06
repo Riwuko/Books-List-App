@@ -7,8 +7,8 @@ class Book(models.Model):
     authors = ArrayField(models.CharField(max_length=200))
     published_date = models.DateField()
     categories = ArrayField(models.CharField(max_length=200,blank=True))
-    average_rating = models.IntegerField()
-    rating_count = models.IntegerField()
+    average_rating = models.FloatField()
+    ratings_count = models.FloatField()
     thumbnail = models.URLField()
 
     def __str__(self):

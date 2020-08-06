@@ -5,3 +5,6 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = '__all__'
+
+# class BookPostSerializer(serializers.ModelSerializer):
+#     fields = serializers.SlugField()
