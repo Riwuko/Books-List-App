@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:12
+  web:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
