@@ -8,8 +8,11 @@ class Book(models.Model):
     published_date = models.DateField()
     categories = ArrayField(models.CharField(max_length=200,blank=True))
     average_rating = models.FloatField()
-    ratings_count = models.FloatField()
+    rating_count = models.FloatField()
     thumbnail = models.URLField()
 
     def __str__(self):
         return f'title: {self.title}, authors: {self.authors}'
+    
+    class Meta:
+        unique_together = ('title', 'authors')
