@@ -1,23 +1,18 @@
 from django.shortcuts import render
 
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from .models import Book
 from .serializers import BookSerializer
 
-@api_view(['GET'])
-def bookListView(request):
-    books = Book.objects.all()
-    serializer = BookSerializer(books,many=True)
-    return Response(serializer.data)
 
-@api_view(['GET'])
-def bookDetailView(request,id):
-    books = Book.objects.get(id=id)
-    serializer = BookSerializer(books,many=False)
-    return Response(serializer.data)
-
+class BookViewSet(ReadOnlyModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    pagination_class = PageNumberPagination
 
 @api_view(['POST'])
 def bookCreateView(request,id):
@@ -25,5 +20,5 @@ def bookCreateView(request,id):
 
     if serializer.is_valid():
         serializer.save()
-        
+
     return Response(serializer.data)
