@@ -1,5 +1,8 @@
 import json
 from django.http import JsonResponse
+from django_filters  import rest_framework as filters
+
+
 import requests
 
 from app.models import Book
@@ -12,17 +15,24 @@ def download_items(arg):
 def prepare_items(items):
     return (
         [
-            item["volumeInfo"]["title"],
-            item["volumeInfo"]["authors"],
-            item["volumeInfo"]["publishedDate"],
+            item["volumeInfo"].get("title"),
+            item["volumeInfo"].get("authors"),
+            item["volumeInfo"].get("publishedDate"),
             item['volumeInfo'].get('categories'),
             item["volumeInfo"].get("averageRating"),
             item["volumeInfo"].get("ratingsCount"),
-            item["volumeInfo"]["imageLinks"]["thumbnail"]
+            item["volumeInfo"]["imageLinks"].get("thumbnail")
         ] for item in items )
 
     
-
+class BookFilter(filters.FilterSet):
+    title = filters.CharFilter(lookup_expr='icontains')
+    authors = filters.CharFilter(lookup_expr='icontains')
+    categories = filters.CharFilter(lookup_expr='icontains')
+    
+    class Meta:
+        model = Book
+        fields = ('title','authors','categories')
     
 # def prepare_items(items):
 #     prepared_books = []
