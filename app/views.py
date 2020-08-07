@@ -1,15 +1,14 @@
-from django.shortcuts import render
-
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import OrderingFilter
 
+
+from app.views_api import BookFilter, download_items, find_books_for_update, prepare_items
 from .models import Book
 from .serializers import BookSerializer
 
-from app.views_api import BookFilter, download_items, prepare_items
 
 class BookViewSet(ReadOnlyModelViewSet):
     queryset = Book.objects.all()
@@ -22,23 +21,14 @@ class BookViewSet(ReadOnlyModelViewSet):
 @api_view(['POST'])
 def bookCreateView(request):
     items = download_items(request.data)
-    books = prepare_items(items)
+    books = prepare_items(items) 
+    books_for_update = find_books_for_update(books)
+    
+    Book.objects.bulk_update([book for book in books_for_update], fields=('title','authors','published_date','categories', 'average_rating','rating_count','thumbnail'))
+    
+    Book.objects.bulk_create(
+        [
+            Book(**book) for book in books
+        ],ignore_conflicts=True)
 
-    #Book.objects.bulk_create(books,ignore_conflicts=True)
-    # for book in books:
-    #     _,created = Book.objects.get_or_create(book)
-    # print(created)
-
-    return Response({'status':'finished'})
-
-#     @api_view(['POST'])
-# def bookCreateView(request):
-#     serializer = BookPostSerializer(data=request.data)
-#     print(request.data)
-#     if serializer.is_valid():
-#         print(serializer.data['field'])
-#         download_books(serializer.data['field'])
-#     else:
-#         print(serializer.errors)
-#     html = "<html><body>It is now.</body></html>"
-#     return Response(html)
+    return Response({'status':'books added'})
