@@ -19,7 +19,7 @@ class BookViewSet(ReadOnlyModelViewSet):
     filterset_class = BookFilter
 
 @api_view(['POST'])
-def bookCreateView(request):
+def book_create_view(request):
     items = download_items(request.data)
     books = prepare_items(items) 
     books_for_update = find_books_for_update(books)
