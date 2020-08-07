@@ -7,11 +7,5 @@ router.register('book-list', BookViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),
-    path('book-add',bookCreateView,name='book-add'),
+    path('book-add',bookCreateView,name='book-add')
 ]
-
-# urlpatterns = [
-#     path('',views.bookListView, name='book-list'),
-#     path('book-detail/<int:id>', views.bookDetailView, name='book-detail'),
-#     path('book-create',views.bookCreateView,name='book-create'),
-# ]
