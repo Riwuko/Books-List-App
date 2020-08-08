@@ -2,7 +2,6 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django_filters  import rest_framework as filters
 
-import json
 import requests
 
 from app.models import Book
@@ -16,11 +15,9 @@ class BookFilter(filters.FilterSet):
         model = Book
         fields = ('title','authors','categories')
 
-
 def download_items(arg):
-    request = f'https://www.googleapis.com/books/v1/volumes?q={arg}'
-    downloaded_books = requests.get(request).json()['items']
-    return downloaded_books
+    request_url = 'https://www.googleapis.com/books/v1/volumes'
+    return requests.get(request_url, params={'q':arg}).json().get('items')
 
 def find_books_for_update(books):
     q=Q()
@@ -43,7 +40,7 @@ def prepare_items(items):
         
             'title':item["volumeInfo"].get("title"),
             'authors':item["volumeInfo"].get("authors") if item["volumeInfo"].get("authors") is not None else ["unknown"],
-            'published_date':item["volumeInfo"].get("publishedDate") if len(item["volumeInfo"].get("publishedDate"))==10 else f'{item["volumeInfo"].get("publishedDate")}-01-01',
+            'published_date':item["volumeInfo"].get("publishedDate") if len(item["volumeInfo"].get("publishedDate"))==10 else f'{item["volumeInfo"].get("publishedDate")[0:4]}-01-01',
             'categories':item['volumeInfo'].get('categories'),
             'average_rating':item["volumeInfo"].get("averageRating"),
             'rating_count':item["volumeInfo"].get("ratingsCount"),
