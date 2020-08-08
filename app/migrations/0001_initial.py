@@ -8,24 +8,39 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Book',
+            name="Book",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('authors', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=200), size=None)),
-                ('published_date', models.DateField(null=True)),
-                ('categories', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(blank=True, max_length=200, null=True), blank=True, null=True, size=None)),
-                ('average_rating', models.FloatField(blank=True, null=True)),
-                ('rating_count', models.FloatField(blank=True, null=True)),
-                ('thumbnail', models.URLField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                (
+                    "authors",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.CharField(max_length=200), size=None
+                    ),
+                ),
+                ("published_date", models.DateField(null=True)),
+                (
+                    "categories",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.CharField(blank=True, max_length=200, null=True),
+                        blank=True,
+                        null=True,
+                        size=None,
+                    ),
+                ),
+                ("average_rating", models.FloatField(blank=True, null=True)),
+                ("rating_count", models.FloatField(blank=True, null=True)),
+                ("thumbnail", models.URLField(blank=True, null=True)),
             ],
-            options={
-                'unique_together': {('title', 'authors')},
-            },
+            options={"unique_together": {("title", "authors")},},
         ),
     ]
