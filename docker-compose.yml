@@ -3,14 +3,25 @@ version: '3'
 services:
   db:
     image: postgres:12
+    env_file: .env
   web:
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
+    env_file: .env
     ports:
       - "8000:8000"
     volumes:
       - .:/code
     depends_on:
       - db
+  bootstrap:
+    build:
+        context: .
+        dockerfile: ./compose/django/Dockerfile
+    command: python manage.py migrate
+    env_file: .env
+    depends_on:
+      - db
+      - web
