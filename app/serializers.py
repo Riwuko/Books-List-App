@@ -6,5 +6,5 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = '__all__'
 
-class QuerySerializer(serializers.ModelSerializer):
+class QuerySerializer(serializers.Serializer):
     q = serializers.CharField()
