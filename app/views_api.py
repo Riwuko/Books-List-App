@@ -28,7 +28,6 @@ def find_books_for_update(books):
         q |= Q(title=book['title'], authors=book['authors'],published_date=book['published_date'])
         
     filtered_books = Book.objects.filter(q)
-
     for book in books:
         for filtered in filtered_books:
             if filtered.title == book['title'] and filtered.authors == book['authors']:
@@ -43,12 +42,12 @@ def prepare_items(items):
     prepared_items = [{
         
             'title':item["volumeInfo"].get("title"),
-            'authors':item["volumeInfo"].get("authors"),
+            'authors':item["volumeInfo"].get("authors") if item["volumeInfo"].get("authors") is not None else ["unknown"],
             'published_date':item["volumeInfo"].get("publishedDate") if len(item["volumeInfo"].get("publishedDate"))==10 else f'{item["volumeInfo"].get("publishedDate")}-01-01',
-            'categories':item['volumeInfo'].get('categories') if item['volumeInfo'].get('categories') else None,
+            'categories':item['volumeInfo'].get('categories'),
             'average_rating':item["volumeInfo"].get("averageRating"),
             'rating_count':item["volumeInfo"].get("ratingsCount"),
-            'thumbnail':item["volumeInfo"]["imageLinks"].get("thumbnail")
+            'thumbnail':item["volumeInfo"].get("imageLinks").get("thumbnail") if item["volumeInfo"].get("imageLinks") is not None else item["volumeInfo"].get("imageLinks")
         }
          for item in items ]
     return prepared_items
