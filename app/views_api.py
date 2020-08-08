@@ -1,6 +1,5 @@
 from django_filters  import rest_framework as filters
 
-import requests
 
 from app.models import Book
 
@@ -12,3 +11,4 @@ class BookFilter(filters.FilterSet):
     class Meta:
         model = Book
         fields = ('title','authors','categories')
+    
