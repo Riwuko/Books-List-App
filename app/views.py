@@ -7,7 +7,7 @@ from rest_framework.filters import OrderingFilter
 
 from app.views_api import BookFilter, download_items, find_books_for_update, prepare_items
 from .models import Book
-from .serializers import BookSerializer
+from .serializers import BookSerializer, QuerySerializer
 
 
 class BookViewSet(ReadOnlyModelViewSet):
@@ -20,8 +20,12 @@ class BookViewSet(ReadOnlyModelViewSet):
 
 @api_view(['POST'])
 def book_create_view(request):
+    serializer = QuerySerializer(data=request.data)
+    if serializer.is_valid():
+        q = serializer.data['q']
+        
     response = Response()
-    items = download_items(request.data)
+    items = download_items(q)
     if items is not None:
         books = prepare_items(items) 
         books_for_update = find_books_for_update(books)
