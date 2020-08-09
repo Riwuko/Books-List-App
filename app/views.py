@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -20,7 +21,7 @@ class BookViewSet(ReadOnlyModelViewSet):
     ordering = ("pk",)
     filterset_class = BookFilter
 
-
+@csrf_exempt
 @api_view(["POST"])
 def book_create_view(request):
     serializer = QuerySerializer(data=request.data)
