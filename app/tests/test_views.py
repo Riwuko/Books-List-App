@@ -1,22 +1,23 @@
 from django.db.models import Q
 from django.test import Client, TestCase
 from django.urls import reverse
-from rest_framework.test import APIRequestFactory, RequestsClient
 from unittest.mock import Mock, patch
 
 from app.models import Book
-from app.views import BookViewSet, book_create_view
 from app.tests.tests_utils import GoogleBookResponse
 
 
 class TestViews(TestCase):
     def setUp(self):
-        self.factory = APIRequestFactory()
         self.client = Client()
-        self.add_url = reverse("book-add")
+        self.add_url = reverse("db")
         self.list_url = reverse("book-list")
+        self.id = 1
+        self.detail_url = reverse("book-detail", args=[str(self.id)])
 
-        Book.objects.create(pk=1, title="book", authors=["author"], published_date="1999-01-01")
+        Book.objects.create(
+            pk=self.id, title="book", authors=["author"], published_date="1999-01-01"
+        )
 
     def test_book_list_GET_positive(self):
         response = self.client.get(self.list_url)
@@ -26,7 +27,7 @@ class TestViews(TestCase):
             "previous": None,
             "results": [
                 {
-                    "id": 1,
+                    "id": self.id,
                     "title": "book",
                     "authors": ["author"],
                     "published_date": "1999-01-01",
@@ -50,7 +51,7 @@ class TestViews(TestCase):
             "previous": None,
             "results": [
                 {
-                    "id": 1,
+                    "id": self.id,
                     "title": "book",
                     "authors": ["author"],
                     "published_date": "1999-01-02",
@@ -65,29 +66,37 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertJSONNotEqual(str(response.content, encoding="utf8"), expected_response)
 
-    # def test_book_detail_GET(self):
-    #     request = self.factory.get("")
-    #     book_detail = BookViewSet.as_view({'get': 'retrieve'})
-    #     response = book_detail(request,pk=book.pk)
+    def test_book_detail_GET(self):
+        response = self.client.get(self.detail_url)
+        expected_response = {
+            "id": 1,
+            "title": "book",
+            "authors": ["author"],
+            "published_date": "1999-01-01",
+            "categories": None,
+            "average_rating": None,
+            "rating_count": None,
+            "thumbnail": None,
+        }
 
-    #     self.assertEquals(response.status_code,200)
+        self.assertEquals(response.status_code, 200)
+        self.assertJSONEqual(str(response.content, encoding="utf8"), expected_response)
 
     def test_book_add_POST_adds_new_book(self):
-        object = {"q": "Hobbit czyli Tam i z powrotem"}
-
+        posting_object = {"q": "x"}
         expected_response = {
             "items": [
                 {
                     "volumeInfo": {
-                        "authors": ["John", "F"],
                         "title": "book0",
+                        "authors": ["John", "F"],
                         "publishedDate": "1999-01-01",
                     }
                 },
                 {
                     "volumeInfo": {
-                        "authors": ["Kennedy"],
                         "title": "book1",
+                        "authors": ["Kennedy"],
                         "publishedDate": "2000-01-01",
                     }
                 },
@@ -96,20 +105,19 @@ class TestViews(TestCase):
         with patch(
             "app.views_utils.requests.get", Mock(return_value=GoogleBookResponse(expected_response))
         ):
-            response = self.client.post(self.add_url, object)
+            self.client.post(self.add_url, posting_object)
 
-        books = Book.objects.filter(Q(title="book1") | Q(title="book2"))
+        books = Book.objects.filter(Q(title="book0") | Q(title="book1"))
         for book in books:
             assert book.title in ["book0", "book1"]
 
+    def test_book_add_POST_adds_new_book_empty_list(self):
+        posting_object = {"q": "x"}
 
-def test_book_add_POST_adds_new_book_empty_list(self):
-    object = {"q": "Hobbit czyli Tam i z powrotem"}
+        expected_response = {"items": None}
+        with patch(
+            "app.views_utils.requests.get", Mock(return_value=GoogleBookResponse(expected_response))
+        ):
+            response = self.client.post(self.add_url, posting_object)
 
-    expected_response = {"items": []}
-    with patch(
-        "app.views_utils.requests.get", Mock(return_value=GoogleBookResponse(expected_response))
-    ):
-        response = self.client.post(self.add_url, object)
-
-    self.assertEquals(response["status"], "books not added")
+        self.assertEquals(response["status"], "books not added")
