@@ -25,7 +25,8 @@ class BookViewSet(ReadOnlyModelViewSet):
 @api_view(["POST"])
 @csrf_exempt
 def book_create_view(request):
-    serializer = QuerySerializer(data=request.data)
+    print(f'\n\n{request.body}\n\n')
+    serializer = QuerySerializer(data=request.body)
     response = Response()
     if serializer.is_valid():
         q = serializer.data["q"]
