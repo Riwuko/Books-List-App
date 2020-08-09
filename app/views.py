@@ -38,7 +38,7 @@ def book_create_view(request):
                 [book for book in books_for_update],
                 fields=(
                     "title",
-                    "authors",
+                    "author",
                     "published_date",
                     "categories",
                     "average_rating",

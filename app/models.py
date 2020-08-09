@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
-    authors = ArrayField(models.CharField(max_length=200))
+    author = ArrayField(models.CharField(max_length=200))
     published_date = models.DateField(null=True)
     categories = ArrayField(
         models.CharField(max_length=200, blank=True, null=True), null=True, blank=True
@@ -17,4 +17,4 @@ class Book(models.Model):
         return f"title: {self.title}, authors: {self.authors}"
 
     class Meta:
-        unique_together = ("title", "authors")
+        unique_together = ("title", "author")

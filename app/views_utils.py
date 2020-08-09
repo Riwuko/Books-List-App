@@ -14,12 +14,12 @@ def download_items(arg):
 def find_books_for_update(books):
     q = Q()
     for book in books:
-        q |= Q(title=book["title"], authors=book["authors"], published_date=book["published_date"])
+        q |= Q(title=book["title"], author=book["author"], published_date=book["published_date"])
 
     filtered_books = Book.objects.filter(q)
     for book in books:
         for filtered in filtered_books:
-            if filtered.title == book["title"] and filtered.authors == book["authors"]:
+            if filtered.title == book["title"] and filtered.author == book["author"]:
                 filtered.categories = book["categories"]
                 filtered.average_rating = book["average_rating"]
                 filtered.rating_count = book["rating_count"]
@@ -41,7 +41,7 @@ def prepare_items(items):
     return [
         {
             "title": item["volumeInfo"].get("title"),
-            "authors": item["volumeInfo"].get("authors", ["UNKNOWN"]),
+            "author": item["volumeInfo"].get("authors", ["UNKNOWN"]),
             "published_date": get_proper_date(item["volumeInfo"].get("publishedDate")),
             "categories": item["volumeInfo"].get("categories"),
             "average_rating": item["volumeInfo"].get("averageRating"),
