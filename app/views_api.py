@@ -6,7 +6,7 @@ from app.models import Book
 
 class BookFilter(filters.FilterSet):
     title = filters.CharFilter(lookup_expr="icontains")
-    authors = filters.CharFilter(lookup_expr="icontains")
+    author = filters.CharFilter(lookup_expr="icontains")
     categories = filters.CharFilter(lookup_expr="icontains")
 
     class Meta:
