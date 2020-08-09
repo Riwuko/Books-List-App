@@ -1,1 +1,2 @@
-web: python website/manage.py runserver 0.0.0.0:$PORT
+release: python manage.py
+web: gunicorn --chdir app main:app
