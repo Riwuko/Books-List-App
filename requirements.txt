@@ -1,0 +1,7 @@
+Django>=2.2,<3.0
+jsonschema>=3.2,<3.3
+psycopg2>=2.8,<2.9
+djangorestframework>=3.10.0,<3.11.0
+requests==2.24.0
+django-filter==2.3.0
+django-environ
