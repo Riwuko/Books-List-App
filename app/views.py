@@ -21,14 +21,15 @@ class BookViewSet(ReadOnlyModelViewSet):
     ordering = ("pk",)
     filterset_class = BookFilter
 
-@csrf_exempt
+
 @api_view(["POST"])
+@csrf_exempt
 def book_create_view(request):
     serializer = QuerySerializer(data=request.data)
+    response = Response()
     if serializer.is_valid():
         q = serializer.data["q"]
-
-        response = Response()
+        
         items = download_items(q)
 
         if items is not None:
