@@ -3,8 +3,8 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=200)
-    authors = ArrayField(models.CharField(max_length=200))
+    title = models.TextField()
+    author = ArrayField(models.CharField(max_length=200))
     published_date = models.DateField(null=True)
     categories = ArrayField(
         models.CharField(max_length=200, blank=True, null=True), null=True, blank=True
@@ -14,7 +14,7 @@ class Book(models.Model):
     thumbnail = models.URLField(blank=True, null=True)
 
     def __str__(self):
-        return f"title: {self.title}, authors: {self.authors}"
+        return f"title: {self.title}, authors: {self.author}"
 
     class Meta:
-        unique_together = ("title", "authors")
+        unique_together = ("title", "author")
