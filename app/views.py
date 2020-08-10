@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.filters import OrderingFilter
 
+import json
 
 from app.views_api import BookFilter
 from app.views_utils import download_items, find_books_for_update, prepare_items
@@ -25,8 +26,10 @@ class BookViewSet(ReadOnlyModelViewSet):
 @api_view(["POST"])
 @csrf_exempt
 def book_create_view(request):
-    print(f'\n\n{request.body}\n\n')
-    serializer = QuerySerializer(data=request.body)
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    data = body['content']
+    serializer = QuerySerializer(data)
     response = Response()
     if serializer.is_valid():
         q = serializer.data["q"]
